@@ -3,226 +3,87 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Aroeira G Fitness 3D — Planta corrigida</title>
+<title>Aroeira G Fitness — Imersão 3D</title>
 <style>
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#111;font-family:Arial,sans-serif;color:#fff}
 canvas{display:block}
-#start{position:fixed;inset:0;z-index:5;display:grid;place-items:center;background:radial-gradient(circle,#3b3b3b,#111 65%,#050505)}
-.card{width:min(560px,88vw);padding:38px 28px;text-align:center;background:#101010e8;border:1px solid #555;border-radius:22px;box-shadow:0 30px 100px #000}
-.logo{color:#ffd700;font-weight:bold;letter-spacing:4px;font-size:13px}
-h1{font-size:48px;margin:14px 0 8px}.sub{color:#bbb;line-height:1.6}
-button{border:0;border-radius:12px;padding:15px 22px;font-weight:bold;cursor:pointer}
-#enter{margin-top:22px;background:#ffd700;color:#111}
-#hud{display:none;position:fixed;inset:0;z-index:3;pointer-events:none}
-.brand{position:absolute;left:18px;top:16px;color:#ffd700;font-weight:bold;letter-spacing:3px;font-size:12px}
-.help{position:absolute;right:18px;top:14px;background:#0009;border:1px solid #555;border-radius:10px;padding:9px;font-size:11px;color:#ddd}
+#start{position:fixed;inset:0;z-index:10;display:grid;place-items:center;background:radial-gradient(circle,#3d3d3d,#111 68%,#050505)}
+.card{width:min(560px,88vw);padding:38px 28px;text-align:center;background:#101010ed;border:1px solid #555;border-radius:22px;box-shadow:0 30px 100px #000}
+.logo{color:#ffd400;font-weight:bold;letter-spacing:4px;font-size:13px}h1{font-size:44px;margin:14px 0 8px}.sub{color:#bbb;line-height:1.6}
+button{border:0;border-radius:12px;padding:15px 22px;font-weight:bold;cursor:pointer}#enter{margin-top:22px;background:#ffd400;color:#111}
+#hud{display:none;position:fixed;inset:0;z-index:3;pointer-events:none}.brand{position:absolute;left:22px;top:18px;color:#ffd400;font-weight:bold;letter-spacing:4px;font-size:13px}.help{position:absolute;right:18px;top:14px;background:#000b;border:1px solid #555;border-radius:10px;padding:9px;font-size:11px;color:#ddd}
 #cross{position:absolute;left:50%;top:50%;width:5px;height:5px;border-radius:50%;background:#fff;transform:translate(-50%,-50%)}
 #info{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);padding:9px 14px;background:#000b;border:1px solid #555;border-radius:10px;font-size:11px;display:none}
-#map{display:none;position:absolute;right:16px;bottom:16px;width:250px;padding:12px;background:#080808ed;border:1px solid #555;border-radius:14px;pointer-events:auto}
-#map h3{font-size:12px;color:#ffd700;margin:0 0 8px}
-#plan{position:relative;height:150px;background:#aaa;border:2px solid #333}
-.wall{position:absolute;background:#333}.p{position:absolute;width:9px;height:9px;border-radius:50%;background:#ffd700;transform:translate(-50%,-50%)}
-#mobile{display:none;position:fixed;inset:0;z-index:4;pointer-events:none}
-#joy{position:absolute;left:20px;bottom:25px;width:125px;height:125px;border:1px solid #fff5;border-radius:50%;background:#0005;pointer-events:auto}
-#knob{position:absolute;left:50%;top:50%;width:52px;height:52px;border-radius:50%;background:#ffd700;transform:translate(-50%,-50%)}
-#look{position:absolute;right:0;top:0;width:58%;height:72%;pointer-events:auto}
-#mapBtn{position:absolute;right:20px;bottom:30px;width:60px;height:60px;border-radius:50%;background:#ffd700;color:#111;display:grid;place-items:center;font-weight:bold;pointer-events:auto}
-@media(max-width:700px){.help{display:none}#mobile{display:block}h1{font-size:38px}.card{padding:30px 20px}}
+#map{display:none;position:absolute;right:16px;bottom:16px;width:250px;padding:12px;background:#080808ed;border:1px solid #555;border-radius:14px;pointer-events:auto}#map h3{font-size:12px;color:#ffd400;margin:0 0 8px}
+#plan{position:relative;height:165px;background:#aaa;border:2px solid #333;overflow:hidden}.mwall{position:absolute;background:#333}.mraised{position:absolute;background:#777;border:1px dashed #444}.mstair{position:absolute;background:#888}.p{position:absolute;width:9px;height:9px;border-radius:50%;background:#ffd400;transform:translate(-50%,-50%);box-shadow:0 0 8px #ffd400}
+#mobile{display:none;position:fixed;inset:0;z-index:4;pointer-events:none}#joy{position:absolute;left:20px;bottom:25px;width:125px;height:125px;border:1px solid #fff5;border-radius:50%;background:#0005;pointer-events:auto}#knob{position:absolute;left:50%;top:50%;width:52px;height:52px;border-radius:50%;background:#ffd400;transform:translate(-50%,-50%)}#look{position:absolute;right:0;top:0;width:62%;height:76%;pointer-events:auto}#mapBtn{position:absolute;right:20px;bottom:30px;width:60px;height:60px;border-radius:50%;background:#ffd400;color:#111;display:grid;place-items:center;font-weight:bold;pointer-events:auto}
+@media(max-width:700px){.help{display:none}#mobile{display:block}h1{font-size:36px}.card{padding:30px 20px}.brand{left:32px;top:28px;font-size:12px}.info{font-size:10px}}
 </style>
 </head>
 <body>
-<div id="start"><div class="card">
-<div class="logo">AROEIRA G FITNESS</div>
-<h1>Explore em 3D</h1>
-<div class="sub">Entre na academia e caminhe pelo ambiente em primeira pessoa.</div>
-<button id="enter">ENTRAR NA EXPERIÊNCIA</button>
-<div style="margin-top:15px;color:#888;font-size:11px">Computador: WASD + mouse • Celular: joystick + arraste</div>
-</div></div>
+<div id="start"><div class="card"><div class="logo">AROEIRA G FITNESS</div><h1>Explore em 3D</h1><div class="sub">Caminhe pela academia respeitando a planta real, com piso elevado e escada de acesso.</div><button id="enter">ENTRAR NA EXPERIÊNCIA</button><div style="margin-top:15px;color:#888;font-size:11px">Computador: WASD + mouse • Celular: joystick + arraste</div></div></div>
 <div id="hud"><div class="brand">AROEIRA G FITNESS</div><div class="help">WASD • MOUSE • SHIFT • M = MAPA • ESC</div><div id="cross"></div><div id="info"></div>
-<div id="map"><h3>MAPA</h3><div id="plan">
-<div class="wall" style="left:3%;top:3%;width:2%;height:94%"></div><div class="wall" style="left:3%;top:3%;width:94%;height:2%"></div><div class="wall" style="left:3%;top:95%;width:94%;height:2%"></div><div class="wall" style="left:3%;top:16%;width:34%;height:2%"></div><div class="wall" style="left:37%;top:16%;width:2%;height:11%"></div><div class="wall" style="left:3%;top:27%;width:34%;height:2%"></div><div style="position:absolute;left:49%;top:5%;width:45%;height:62%;background:#8888;border:1px dashed #555"></div><div style="position:absolute;left:46%;top:67%;width:12%;height:5%;background:#777"></div><div id="mp" class="p"></div>
-</div></div></div>
+<div id="map"><h3>MAPA</h3><div id="plan"><div class="mwall" style="left:3%;top:3%;width:2%;height:94%"></div><div class="mwall" style="left:3%;top:3%;width:94%;height:2%"></div><div class="mwall" style="left:3%;top:95%;width:94%;height:2%"></div><div class="mwall" style="left:3%;top:16%;width:34%;height:2%"></div><div class="mwall" style="left:37%;top:16%;width:2%;height:12%"></div><div class="mwall" style="left:3%;top:28%;width:34%;height:2%"></div><div class="mraised" style="left:49%;top:5%;width:45%;height:62%"></div><div class="mstair" style="left:49%;top:67%;width:13%;height:6%"></div><div id="mp" class="p"></div></div></div></div>
 <div id="mobile"><div id="joy"><div id="knob"></div></div><div id="look"></div><div id="mapBtn">M</div></div>
-
-<!-- Classic script: works when opening the HTML directly, provided the device has internet. -->
-<script src="three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.min.js"></script>
 <script>
-(function(){
+(()=>{
 const scene=new THREE.Scene();
-scene.background=new THREE.Color(0x9a9a9a);
-scene.fog=new THREE.Fog(0x9a9a9a,28,75);
-const camera=new THREE.PerspectiveCamera(72,innerWidth/innerHeight,.05,100);
-camera.position.set(-2.7,1.7,9.3);
-const renderer=new THREE.WebGLRenderer({antialias:true});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);
-renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
-document.body.appendChild(renderer.domElement);
-
-scene.add(new THREE.HemisphereLight(0xffffff,0x333333,2));
-const sun=new THREE.DirectionalLight(0xffffff,2);sun.position.set(-8,12,10);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);scene.add(sun);
-
+scene.background=new THREE.Color(0x858585);scene.fog=new THREE.Fog(0x858585,24,42);
+const camera=new THREE.PerspectiveCamera(70,innerWidth/innerHeight,.05,100);
+const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;document.body.appendChild(renderer.domElement);
+scene.add(new THREE.HemisphereLight(0xffffff,0x343434,2.1));
+const sun=new THREE.DirectionalLight(0xffffff,2.2);sun.position.set(-6,12,8);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);scene.add(sun);
 const colliders=[];
-function material(c,r=.75,m=0){return new THREE.MeshStandardMaterial({color:c,roughness:r,metalness:m})}
-function box(n,x,y,z,sx,sy,sz,mat,hit=true){
- const o=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),mat);o.name=n;o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;scene.add(o);
- if(hit)colliders.push({x1:x-sx/2,x2:x+sx/2,z1:z-sz/2,z2:z+sz/2});
- return o;
-}
-const floor=material(0x4b4b4b,.95), wall=material(0xbcbcbc,.85), dark=material(0x1b1b1b,.65,.25), gold=material(0xd5aa00,.35,.5);
-  // Planta corrigida conforme a referência: 7,64 m de largura x aproximadamente 21,7 m de comprimento.
-  const W=7.64, L=21.7, WT=.14, H=5.2;
-  box("Piso",0,-.1,0,W,.2,L,floor,false);
-  box("Teto",0,H,0,W,.1,L,material(0xd0d0d0),false);
-  box("N",0,H/2,-L/2,W,H,WT,wall);
-  box("S",0,H/2,L/2,W,H,WT,wall);
-  box("O",-W/2,H/2,0,WT,H,L,wall);
-  box("L",W/2,H/2,0,WT,H,L,wall);
-
-  // A área lateral direita NÃO é um cômodo fechado: é um segundo nível aberto.
-  // O piso elevado começa após uma borda de desnível, sem parede separando os ambientes.
-  const raisedX=1.85, raisedZ=-4.0, raisedW=3.45, raisedL=13.6, raisedH=.95;
-  const raisedFloor=material(0x666666,.9);
-  box("PisoElevado",raisedX,raisedH-.1,raisedZ,raisedW,.2,raisedL,raisedFloor,false);
-
-  // Borda do desnível: somente acabamento baixo, sem fechar a área com parede.
-  box("BordaDoPiso",.12,.06,raisedZ+raisedL/2-.08,.08,.12,raisedL-.16,wall,false);
-
-  // Guarda-corpo/protetor na lateral externa do piso elevado.
-  const railMat=material(0x333333,.55,.2);
-  function rail(x,z,sx,sz){
-    box("GuardaCorpo",x,raisedH+0.65,z,sx,.10,sz,railMat,false);
-    const count=Math.max(2,Math.floor(Math.max(sx,sz)/.8));
-    for(let i=0;i<=count;i++){
-      const t=i/count;
-      const px=x+(sx/2)*0;
-      const pz=z-sz/2+sz*t;
-      if(sz>sx) box("PosteGuardaCorpo",x,raisedH+.35,pz,.08,.8,.08,railMat,false);
-      else box("PosteGuardaCorpo",x-sx/2+sx*t,raisedH+.35,z,.08,.8,.08,railMat,false);
-    }
-  }
-  // Protetor na lateral direita e no fundo do nível elevado.
-  rail(3.52,raisedZ,0.08,raisedL);
-  rail(raisedX,raisedZ-raisedL/2,raisedW,.08);
-
-  // Banheiro no canto superior esquerdo.
-  const bx=-2.45, bz=-9.05, bw=2.55, bd=2.75;
-  box("BanheiroN",bx,H/2,bz-bd/2,bw,H,WT,wall);
-  box("BanheiroL",bx+bw/2,H/2,bz,.12,H,bd,wall);
-  box("BanheiroS",bx,H/2,bz+bd/2,bw,H,WT,wall);
-  // Frente do banheiro com vão central para a porta.
-  box("BanheiroFrontalA",bx-.95,H/2,bz+bd/2,.65,H,WT,wall);
-  box("BanheiroFrontalB",bx+.95,H/2,bz+bd/2,.65,H,WT,wall);
-  box("PortaBanheiro",bx,H/2,bz+bd/2,.82,2.2,.08,material(0x8a6225,.5),false);
-  box("PiaBanheiro",bx-.55,.9,bz-.72,.65,.15,.45,material(0xf0f0f0,.25),false);
-  const wc=new THREE.Mesh(new THREE.CylinderGeometry(.34,.38,.55,20),material(0xf0f0f0,.3));
-  wc.position.set(bx+.62,.3,bz-.72);scene.add(wc);
-
-  // Iluminação proporcional à nova planta.
-  for(let x=-2.6;x<=2.6;x+=2.6)for(let z=-7.2;z<=8.5;z+=4.5){
-    const l=new THREE.PointLight(0xffffff,2.0,9);
-    l.position.set(x,4.7,z);scene.add(l);
-    box("LED",x,5.05,z,1.5,.05,.22,material(0xffffff,.25),false)
-  }
-
-function machine(x,z,s=1){
- const g=new THREE.Group();
- const a=new THREE.Mesh(new THREE.BoxGeometry(1.35*s,.2,1.7*s),dark);a.position.y=.1;g.add(a);
- const b=new THREE.Mesh(new THREE.BoxGeometry(.7*s,.18,.8*s),material(0x262626));b.position.set(0,.55,.15*s);g.add(b);
- const p=new THREE.Mesh(new THREE.BoxGeometry(.12*s,1.5*s,.12*s),dark);p.position.set(0,1.1,-.62*s);g.add(p);
- const bar=new THREE.Mesh(new THREE.BoxGeometry(1.7*s,.12,.12),gold);bar.position.set(0,1.75,-.62*s);g.add(bar);
- g.position.set(x,0,z);g.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true}});scene.add(g);
- colliders.push({x1:x-.75*s,x2:x+.75*s,z1:z-.9*s,z2:z+.9*s});
-}
-function bench(x,z,r=0){
- const g=new THREE.Group();const b=new THREE.Mesh(new THREE.BoxGeometry(2,.2,.65),dark);b.position.y=.6;g.add(b);
- const leg=new THREE.Mesh(new THREE.BoxGeometry(.15,.6,.15),dark);leg.position.y=.3;g.add(leg);g.position.set(x,0,z);g.rotation.y=r;scene.add(g);
- colliders.push({x1:x-1.1,x2:x+1.1,z1:z-.55,z2:z+.55});
-}
-function treadmill(x,z){
- const g=new THREE.Group();const d=new THREE.Mesh(new THREE.BoxGeometry(1,.18,2),dark);d.position.y=.22;g.add(d);
- const bar=new THREE.Mesh(new THREE.BoxGeometry(1,1.4,.1),dark);bar.position.set(0,.95,-.85);g.add(bar);
- const sc=new THREE.Mesh(new THREE.BoxGeometry(.5,.32,.08),gold);sc.position.set(0,1.5,-.82);g.add(sc);g.position.set(x,0,z);scene.add(g);
- colliders.push({x1:x-.6,x2:x+.6,z1:z-1.05,z2:z+1.05});
-}
-
-
-
-
-
-// Equipamentos posicionados conforme a referência.
-  machine(-2.45,-6.8,.85);
-  machine(-2.35,-4.2,.82);
-  machine(-2.45,-1.4,.82);
-  machine(-2.35,1.5,.80);
-  bench(-1.9,-7.9,0);
-  bench(-1.9,3.7,0);
-  treadmill(-2.35,6.0,.82);
-  treadmill(-1.0,6.0,.82);
-  machine(2.15,0.8,.72);
-  machine(2.25,-2.2,.70);
-  bench(2.15,-5.5,0);
-  treadmill(2.15,-8.2,.78);
-
-  // Escada de acesso ao segundo nível, aberta para o salão.
-  // Os degraus sobem até o piso elevado, sem parede lateral fechando a escada.
-  const stairX=1.85, stairZ=2.9, stairW=2.0, steps=6;
-  for(let i=0;i<steps;i++){
-    const depth=.48;
-    const y=.16+i*(raisedH/steps);
-    const z=stairZ+i*depth;
-    box("Degrau",stairX,y,z,stairW,.32,depth,wall,false);
-  }
-  // Pequeno guarda-corpo nas laterais da escada.
-  for(const sx of [stairX-stairW/2,stairX+stairW/2]){
-    box("ProtetorEscada",sx,.62,stairZ+steps*depth/2,.08,1.0,steps*depth,railMat,false);
-  }
-
-const doors=[];
-function door(x,z,w=1){const d=box("Porta",x,1.35,z,w,2.7,.12,material(0x8a6225,.5),false);doors.push({o:d,open:false,a:0});}
-door(-2.65,10.78,1.05);door(-.28,3.15,1.1);
-
-const pois=[[-2.3,-5.5,"ÁREA DE MUSCULAÇÃO"],[2.0,-5.0,"SEGUNDO NÍVEL"],[-2.45,-9.0,"BANHEIRO"],[0,10.0,"ENTRADA"],[2.1,2.6,"ESCADA / ACESSO AO NÍVEL ELEVADO"]];
-
-let started=false,locked=false,yaw=0,pitch=0;
-const keys={};
-addEventListener("keydown",e=>{keys[e.code]=true;if(e.code==="KeyM")document.getElementById("map").style.display=document.getElementById("map").style.display==="block"?"none":"block"});
-addEventListener("keyup",e=>keys[e.code]=false);
-
-function lock(){if(started && innerWidth>700 && renderer.domElement.requestPointerLock)renderer.domElement.requestPointerLock()}
-renderer.domElement.addEventListener("click",lock);
-document.addEventListener("pointerlockchange",()=>locked=document.pointerLockElement===renderer.domElement);
-document.addEventListener("mousemove",e=>{if(!locked)return;yaw-=e.movementX*.0022;pitch-=e.movementY*.0022;pitch=Math.max(-1.3,Math.min(1.3,pitch));});
-function blocked(x,z){const r=.35;return colliders.some(c=>x>c.x1-r&&x<c.x2+r&&z>c.z1-r&&z<c.z2+r)}
+const mat=(c,r=.8,m=0)=>new THREE.MeshStandardMaterial({color:c,roughness:r,metalness:m});
+const floorMat=mat(0x5b5b5b,.95), wallMat=mat(0xbcbcbc,.85), dark=mat(0x202020,.65,.2), gold=mat(0xd7ad00,.4,.35), raisedMat=mat(0x777777,.9), railMat=mat(0x242424,.5,.2);
+function box(name,x,y,z,sx,sy,sz,material,hit=true){const o=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),material);o.name=name;o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;scene.add(o);if(hit)colliders.push({x1:x-sx/2,x2:x+sx/2,z1:z-sz/2,z2:z+sz/2});return o}
+// Medidas base da planta de referência.
+const W=7.64,L=21.72,H=5.25;
+box('Piso',0,-.1,0,W,.2,L,floorMat,false);box('Teto',0,H,0,W,.1,L,mat(0xcfcfcf),false);
+box('ParedeN',0,H/2,-L/2,W,H,.16,wallMat);box('ParedeS',0,H/2,L/2,W,H,.16,wallMat);box('ParedeO',-W/2,H/2,0,.16,H,L,wallMat);box('ParedeL',W/2,H/2,0,.16,H,L,wallMat);
+// Banheiro no canto superior esquerdo: fechado somente onde a planta mostra.
+const bathW=2.55,bathL=2.75,bathX=-2.45,bathZ=-9.15;
+box('BanheiroFundo',bathX,H/2,bathZ-bathL/2,bathW,H,.14,wallMat);box('BanheiroEsq',bathX-bathW/2,H/2,bathZ,.14,H,bathL,wallMat);box('BanheiroDir',bathX+bathW/2,H/2,bathZ,.14,H,bathL,wallMat);
+box('BanheiroFrenteA',bathX-.83,H/2,bathZ+bathL/2,.88,H,.14,wallMat);box('BanheiroFrenteB',bathX+.83,H/2,bathZ+bathL/2,.88,H,.14,wallMat);
+box('PortaBanheiro',bathX,H/2,bathZ+bathL/2,.8,2.2,.08,mat(0x8b6225,.5),false);
+box('Pia',bathX-.58,.9,bathZ-.72,.62,.15,.42,mat(0xf2f2f2,.25),false);const wc=new THREE.Mesh(new THREE.CylinderGeometry(.34,.38,.55,20),mat(0xf2f2f2,.3));wc.position.set(bathX+.62,.3,bathZ-.72);scene.add(wc);
+// SEGUNDO NÍVEL: aberto, sem parede de separação.
+const levelX=1.78,levelZ=-3.55,levelW=3.52,levelL=13.7,levelH=1.02;
+box('PisoElevado',levelX,levelH-.1,levelZ,levelW,.2,levelL,raisedMat,false);
+// Face vertical do desnível apenas como acabamento estrutural; não fecha a lateral como cômodo.
+box('FrenteDesnivel',levelX,levelH/2,levelZ+levelL/2,levelW,levelH,.10,mat(0x8b8b8b),false);
+// Guarda-corpo na borda do piso elevado.
+function railLine(x,z,sx,sz){const y=levelH+.72;box('Corrimao',x,y,z,sx,.08,sz,railMat,false);const n=Math.max(2,Math.ceil(Math.max(sx,sz)/.7));for(let i=0;i<=n;i++){const t=i/n;if(sz>sx)box('Poste',x,levelH+.38,z-sz/2+sz*t,.07,.78,.07,railMat,false);else box('Poste',x-sx/2+sx*t,levelH+.38,z,.07,.78,.07,railMat,false)}}
+railLine(levelX-levelW/2,levelZ,.08,levelL);railLine(levelX+levelW/2,levelZ,.08,levelL);railLine(levelX,levelZ-levelL/2,levelW,.08);
+// Escada na extremidade inferior/direita, aberta para o salão.
+const stairX=1.85,stairStartZ=3.25,stepW=2.05,stepD=.45,steps=6;
+for(let i=0;i<steps;i++){const y=.085+i*(levelH/steps);const z=stairStartZ+i*stepD;box('Degrau',stairX,y,z,stepW,.17+i*(levelH/steps),stepD,wallMat,false)}
+// Proteção lateral da escada.
+box('ProtetorEscadaL',stairX-stepW/2,.63,stairStartZ+steps*stepD/2,.07,1.0,steps*stepD,railMat,false);box('ProtetorEscadaR',stairX+stepW/2,.63,stairStartZ+steps*stepD/2,.07,1.0,steps*stepD,railMat,false);
+// Iluminação linear.
+for(let x=-2.6;x<=2.6;x+=2.6)for(let z=-7.2;z<=8.8;z+=4){const l=new THREE.PointLight(0xffffff,1.65,8);l.position.set(x,4.75,z);scene.add(l);box('LED',x,5.02,z,1.45,.045,.20,mat(0xffffff,.2),false)}
+function machine(x,z,s=.8,rot=0){const g=new THREE.Group();const a=new THREE.Mesh(new THREE.BoxGeometry(1.25*s,.2,1.55*s),dark);a.position.y=.1;g.add(a);const b=new THREE.Mesh(new THREE.BoxGeometry(.62*s,.18,.72*s),mat(0x292929));b.position.set(0,.55,.12*s);g.add(b);const p=new THREE.Mesh(new THREE.BoxGeometry(.11*s,1.45*s,.11*s),dark);p.position.set(0,1.08,-.56*s);g.add(p);const bar=new THREE.Mesh(new THREE.BoxGeometry(1.55*s,.11,.11),gold);bar.position.set(0,1.68,-.56*s);g.add(bar);g.position.set(x,0,z);g.rotation.y=rot;g.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true}});scene.add(g);colliders.push({x1:x-.72*s,x2:x+.72*s,z1:z-.82*s,z2:z+.82*s})}
+function bench(x,z,rot=0){const g=new THREE.Group();const b=new THREE.Mesh(new THREE.BoxGeometry(1.65,.2,.58),dark);b.position.y=.55;g.add(b);const leg=new THREE.Mesh(new THREE.BoxGeometry(.13,.55,.13),dark);leg.position.y=.27;g.add(leg);g.position.set(x,0,z);g.rotation.y=rot;scene.add(g);colliders.push({x1:x-.9,x2:x+.9,z1:z-.5,z2:z+.5})}
+function treadmill(x,z,rot=0){const g=new THREE.Group();const d=new THREE.Mesh(new THREE.BoxGeometry(.9,.18,1.75),dark);d.position.y=.2;g.add(d);const bar=new THREE.Mesh(new THREE.BoxGeometry(.9,1.3,.09),dark);bar.position.set(0,.9,-.74);g.add(bar);const sc=new THREE.Mesh(new THREE.BoxGeometry(.44,.28,.07),gold);sc.position.set(0,1.42,-.71);g.add(sc);g.position.set(x,0,z);g.rotation.y=rot;scene.add(g);colliders.push({x1:x-.55,x2:x+.55,z1:z-.95,z2:z+.95})}
+// Equipamentos distribuídos de acordo com a leitura da planta.
+machine(-2.35,-7.0,.82);machine(-2.30,-4.25,.78);machine(-2.25,-1.55,.78);machine(-2.25,1.35,.75);bench(-1.65,-8.25);bench(-1.7,3.85);treadmill(-2.25,6.35);treadmill(-.95,6.35);machine(-1.95,-.1,.72);machine(2.25,-6.55,.65);bench(2.15,-8.7);machine(2.2,-4.55,.68);machine(2.2,-2.0,.68);
+// Equipamentos no nível elevado, sem paredes laterais.
+bench(1.55,-7.5,.0);machine(2.2,-5.1,.58);machine(2.15,-2.8,.58);bench(1.55,-.8,.0);machine(2.05,-6.9,.58);
+const pois=[[-2.2,-4.5,'ÁREA DE MUSCULAÇÃO'],[1.9,-3.5,'PISO ELEVADO'],[-2.45,-9.1,'BANHEIRO'],[0,9.8,'ENTRADA'],[1.85,3.8,'ESCADA']];
+let started=false,locked=false,yaw=0,pitch=0;const keys={};
+addEventListener('keydown',e=>{keys[e.code]=true;if(e.code==='KeyM')toggleMap()});addEventListener('keyup',e=>keys[e.code]=false);
+function toggleMap(){const m=document.getElementById('map');m.style.display=m.style.display==='block'?'none':'block'}
+function lock(){if(started&&innerWidth>700&&renderer.domElement.requestPointerLock)renderer.domElement.requestPointerLock()}renderer.domElement.addEventListener('click',lock);document.addEventListener('pointerlockchange',()=>locked=document.pointerLockElement===renderer.domElement);document.addEventListener('mousemove',e=>{if(!locked)return;yaw-=e.movementX*.0022;pitch-=e.movementY*.0022;pitch=Math.max(-1.15,Math.min(1.15,pitch))});
+function blocked(x,z){const r=.30;return colliders.some(c=>x>c.x1-r&&x<c.x2+r&&z>c.z1-r&&z<c.z2+r)}
 function move(dx,dz){let nx=camera.position.x+dx;if(!blocked(nx,camera.position.z))camera.position.x=nx;let nz=camera.position.z+dz;if(!blocked(camera.position.x,nz))camera.position.z=nz;camera.position.x=Math.max(-3.45,Math.min(3.45,camera.position.x));camera.position.z=Math.max(-10.55,Math.min(10.55,camera.position.z))}
-function orient(){camera.rotation.order="YXZ";camera.rotation.y=yaw;camera.rotation.x=pitch}
-const start=document.getElementById("start"),hud=document.getElementById("hud"),info=document.getElementById("info");
-document.getElementById("enter").onclick=()=>{started=true;start.style.display="none";hud.style.display="block";camera.position.set(-2.7,1.7,9.3);yaw=0;pitch=0;if(innerWidth>700)lock()};
-
-let jx=0,jy=0,joyDown=false;
-const joy=document.getElementById("joy"),knob=document.getElementById("knob");
-joy.addEventListener("pointerdown",e=>{joyDown=true;joy.setPointerCapture(e.pointerId);joyMove(e)});
-joy.addEventListener("pointermove",e=>{if(joyDown)joyMove(e)});
-joy.addEventListener("pointerup",()=>{joyDown=false;jx=jy=0;knob.style.transform="translate(-50%,-50%)"});
-function joyMove(e){const r=joy.getBoundingClientRect(),x=(e.clientX-(r.left+r.width/2))/45,y=(e.clientY-(r.top+r.height/2))/45,l=Math.hypot(x,y);if(l>1){x/=l;y/=l}jx=x;jy=y;knob.style.transform=`translate(calc(-50% + ${x*38}px),calc(-50% + ${y*38}px))`}
-let lookDown=false,lx=0,ly=0;const look=document.getElementById("look");
-look.addEventListener("pointerdown",e=>{lookDown=true;look.setPointerCapture(e.pointerId);lx=e.clientX;ly=e.clientY});
-look.addEventListener("pointermove",e=>{if(!lookDown)return; yaw-=(e.clientX-lx)*.006;pitch-=(e.clientY-ly)*.006;pitch=Math.max(-1.3,Math.min(1.3,pitch));lx=e.clientX;ly=e.clientY});
-look.addEventListener("pointerup",()=>lookDown=false);
-document.getElementById("mapBtn").onclick=()=>document.getElementById("map").style.display=document.getElementById("map").style.display==="block"?"none":"block";
-
-let last=performance.now();
-function frame(t){requestAnimationFrame(frame);const dt=Math.min(.05,(t-last)/1000);last=t;
-if(started){orient();let f=(keys.KeyW?1:0)-(keys.KeyS?1:0);let s=(keys.KeyD?1:0)-(keys.KeyA?1:0);if(innerWidth<=700){f=-jy;s=jx}
-let sp=(keys.ShiftLeft||keys.ShiftRight)?5.5:3.2;
-const forward=new THREE.Vector3(Math.sin(yaw),0,-Math.cos(yaw)),right=new THREE.Vector3(Math.cos(yaw),0,Math.sin(yaw));
-if(f||s)move((forward.x*f+right.x*s)*sp*dt,(forward.z*f+right.z*s)*sp*dt);
-let best=null,bd=3;for(const p of pois){const d=Math.hypot(camera.position.x-p[0],camera.position.z-p[1]);if(d<bd){bd=d;best=p}}
-info.style.display=best?"block":"none";if(best)info.textContent=best[2];
-const mp=document.getElementById("mp");mp.style.left=((camera.position.x+W/2)/W*100)+"%";mp.style.top=((camera.position.z+L/2)/L*100)+"%";
-}
-renderer.render(scene,camera)}
-requestAnimationFrame(frame);
-addEventListener("resize",()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+function orient(){camera.rotation.order='YXZ';camera.rotation.y=yaw;camera.rotation.x=pitch}
+const start=document.getElementById('start'),hud=document.getElementById('hud'),info=document.getElementById('info');
+document.getElementById('enter').onclick=()=>{started=true;start.style.display='none';hud.style.display='block';camera.position.set(0,1.7,9.25);yaw=Math.PI;pitch=0;if(innerWidth>700)lock()};
+let jx=0,jy=0,joyDown=false;const joy=document.getElementById('joy'),knob=document.getElementById('knob');joy.addEventListener('pointerdown',e=>{joyDown=true;joy.setPointerCapture(e.pointerId);joyMove(e)});joy.addEventListener('pointermove',e=>{if(joyDown)joyMove(e)});joy.addEventListener('pointerup',()=>{joyDown=false;jx=jy=0;knob.style.transform='translate(-50%,-50%)'});function joyMove(e){const r=joy.getBoundingClientRect();let x=(e.clientX-(r.left+r.width/2))/45,y=(e.clientY-(r.top+r.height/2))/45,l=Math.hypot(x,y);if(l>1){x/=l;y/=l}jx=x;jy=y;knob.style.transform=`translate(calc(-50% + ${x*38}px),calc(-50% + ${y*38}px))`}
+let lookDown=false,lx=0,ly=0;const look=document.getElementById('look');look.addEventListener('pointerdown',e=>{lookDown=true;look.setPointerCapture(e.pointerId);lx=e.clientX;ly=e.clientY});look.addEventListener('pointermove',e=>{if(!lookDown)return;yaw-=(e.clientX-lx)*.005;pitch-=(e.clientY-ly)*.005;pitch=Math.max(-1.15,Math.min(1.15,pitch));lx=e.clientX;ly=e.clientY});look.addEventListener('pointerup',()=>lookDown=false);document.getElementById('mapBtn').onclick=toggleMap;
+let last=performance.now();function frame(t){requestAnimationFrame(frame);const dt=Math.min(.05,(t-last)/1000);last=t;if(started){orient();let f=(keys.KeyW?1:0)-(keys.KeyS?1:0),s=(keys.KeyD?1:0)-(keys.KeyA?1:0);if(innerWidth<=700){f=-jy;s=jx}let sp=(keys.ShiftLeft||keys.ShiftRight)?4.8:2.8;const forward=new THREE.Vector3(Math.sin(yaw),0,-Math.cos(yaw)),right=new THREE.Vector3(Math.cos(yaw),0,Math.sin(yaw));if(f||s)move((forward.x*f+right.x*s)*sp*dt,(forward.z*f+right.z*s)*sp*dt);let best=null,bd=2.7;for(const p of pois){const d=Math.hypot(camera.position.x-p[0],camera.position.z-p[1]);if(d<bd){bd=d;best=p}}info.style.display=best?'block':'none';if(best)info.textContent=best[2];const mp=document.getElementById('mp');mp.style.left=((camera.position.x+W/2)/W*94+3)+'%';mp.style.top=((camera.position.z+L/2)/L*94+3)+'%'}renderer.render(scene,camera)}requestAnimationFrame(frame);addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
 })();
 </script>
-</body></html>
+</body>
+</html>

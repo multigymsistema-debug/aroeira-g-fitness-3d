@@ -1,1 +1,156 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>Aroeira G Fitness — Experiência 3D</title><link rel="stylesheet" href="css/style.css"></head><body><div id="intro"><div class="intro-card"><div class="logo">AG<span>F</span></div><p class="kicker">EXPERIÊNCIA IMERSIVA</p><h1>Aroeira G Fitness</h1><p>Explore nossa academia</p><button id="enter">ENTRAR NA EXPERIÊNCIA 3D</button><small>Preparando sua experiência...</small></div></div><div id="hud" class="hidden"><div class="brand">AROEIRA G FITNESS <em>• 3D TOUR</em></div><div class="top-actions"><button id="mapBtn">▦ Mapa</button><button id="soundBtn">🔊 Som</button><button id="settingsBtn">⚙</button></div><div id="crosshair">+</div><div id="hint"></div><div id="poi"></div><div id="desktop-help">W A S D <span>mover</span> · MOUSE <span>olhar</span> · SHIFT <span>correr</span> · ESC <span>liberar</span></div><div id="mobile-ui"><div id="joystick"><div id="stick"></div></div><div id="look-zone"></div><button id="runBtn">🏃</button><button id="interactBtn">INTERAGIR</button></div><div id="map"><canvas id="mapCanvas" width="230" height="360"></canvas><button id="closeMap">×</button></div><div id="loading">Use WASD para caminhar e o mouse para olhar ao redor.</div></div><script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}</script><script type="module" src="js/main.js"></script></body></html>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Aroeira G Fitness 3D</title>
+<style>
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#111;font-family:Arial,sans-serif;color:#fff}
+canvas{display:block}
+#start{position:fixed;inset:0;z-index:5;display:grid;place-items:center;background:radial-gradient(circle,#3b3b3b,#111 65%,#050505)}
+.card{width:min(560px,88vw);padding:38px 28px;text-align:center;background:#101010e8;border:1px solid #555;border-radius:22px;box-shadow:0 30px 100px #000}
+.logo{color:#ffd700;font-weight:bold;letter-spacing:4px;font-size:13px}
+h1{font-size:48px;margin:14px 0 8px}.sub{color:#bbb;line-height:1.6}
+button{border:0;border-radius:12px;padding:15px 22px;font-weight:bold;cursor:pointer}
+#enter{margin-top:22px;background:#ffd700;color:#111}
+#hud{display:none;position:fixed;inset:0;z-index:3;pointer-events:none}
+.brand{position:absolute;left:18px;top:16px;color:#ffd700;font-weight:bold;letter-spacing:3px;font-size:12px}
+.help{position:absolute;right:18px;top:14px;background:#0009;border:1px solid #555;border-radius:10px;padding:9px;font-size:11px;color:#ddd}
+#cross{position:absolute;left:50%;top:50%;width:5px;height:5px;border-radius:50%;background:#fff;transform:translate(-50%,-50%)}
+#info{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);padding:9px 14px;background:#000b;border:1px solid #555;border-radius:10px;font-size:11px;display:none}
+#map{display:none;position:absolute;right:16px;bottom:16px;width:250px;padding:12px;background:#080808ed;border:1px solid #555;border-radius:14px;pointer-events:auto}
+#map h3{font-size:12px;color:#ffd700;margin:0 0 8px}
+#plan{position:relative;height:150px;background:#aaa;border:2px solid #333}
+.wall{position:absolute;background:#333}.p{position:absolute;width:9px;height:9px;border-radius:50%;background:#ffd700;transform:translate(-50%,-50%)}
+#mobile{display:none;position:fixed;inset:0;z-index:4;pointer-events:none}
+#joy{position:absolute;left:20px;bottom:25px;width:125px;height:125px;border:1px solid #fff5;border-radius:50%;background:#0005;pointer-events:auto}
+#knob{position:absolute;left:50%;top:50%;width:52px;height:52px;border-radius:50%;background:#ffd700;transform:translate(-50%,-50%)}
+#look{position:absolute;right:0;top:0;width:58%;height:72%;pointer-events:auto}
+#mapBtn{position:absolute;right:20px;bottom:30px;width:60px;height:60px;border-radius:50%;background:#ffd700;color:#111;display:grid;place-items:center;font-weight:bold;pointer-events:auto}
+@media(max-width:700px){.help{display:none}#mobile{display:block}h1{font-size:38px}.card{padding:30px 20px}}
+</style>
+</head>
+<body>
+<div id="start"><div class="card">
+<div class="logo">AROEIRA G FITNESS</div>
+<h1>Explore em 3D</h1>
+<div class="sub">Entre na academia e caminhe pelo ambiente em primeira pessoa.</div>
+<button id="enter">ENTRAR NA EXPERIÊNCIA</button>
+<div style="margin-top:15px;color:#888;font-size:11px">Computador: WASD + mouse • Celular: joystick + arraste</div>
+</div></div>
+<div id="hud"><div class="brand">AROEIRA G FITNESS</div><div class="help">WASD • MOUSE • SHIFT • M = MAPA • ESC</div><div id="cross"></div><div id="info"></div>
+<div id="map"><h3>MAPA</h3><div id="plan">
+<div class="wall" style="left:3%;top:3%;width:2%;height:94%"></div><div class="wall" style="left:3%;top:3%;width:94%;height:2%"></div><div class="wall" style="left:3%;top:95%;width:94%;height:2%"></div><div class="wall" style="left:52%;top:3%;width:2%;height:68%"></div><div class="wall" style="left:3%;top:22%;width:23%;height:2%"></div><div id="mp" class="p"></div>
+</div></div></div>
+<div id="mobile"><div id="joy"><div id="knob"></div></div><div id="look"></div><div id="mapBtn">M</div></div>
+
+<!-- Classic script: works when opening the HTML directly, provided the device has internet. -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.min.js"></script>
+<script>
+(function(){
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0x9a9a9a);
+scene.fog=new THREE.Fog(0x9a9a9a,28,75);
+const camera=new THREE.PerspectiveCamera(72,innerWidth/innerHeight,.05,100);
+camera.position.set(-11,1.7,8);
+const renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);
+renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+document.body.appendChild(renderer.domElement);
+
+scene.add(new THREE.HemisphereLight(0xffffff,0x333333,2));
+const sun=new THREE.DirectionalLight(0xffffff,2);sun.position.set(-8,12,10);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);scene.add(sun);
+
+const colliders=[];
+function material(c,r=.75,m=0){return new THREE.MeshStandardMaterial({color:c,roughness:r,metalness:m})}
+function box(n,x,y,z,sx,sy,sz,mat,hit=true){
+ const o=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),mat);o.name=n;o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;scene.add(o);
+ if(hit)colliders.push({x1:x-sx/2,x2:x+sx/2,z1:z-sz/2,z2:z+sz/2});
+ return o;
+}
+const floor=material(0x4b4b4b,.95), wall=material(0xbcbcbc,.85), dark=material(0x1b1b1b,.65,.25), gold=material(0xd5aa00,.35,.5);
+box("Piso",0,-.1,0,30,.2,22,floor,false);box("Teto",0,5.8,0,30,.1,22,material(0xd0d0d0),false);
+box("N",0,2.9,-11,30,5.8,.3,wall);box("S",0,2.9,11,30,5.8,.3,wall);box("O",-15,2.9,0,.3,5.8,22,wall);box("L",15,2.9,0,.3,5.8,22,wall);
+box("Divisoria",0,2.9,-1.5,.3,5.8,19,wall);
+box("BanheiroN",-10.7,2.9,-7.5,8.2,5.8,.3,wall);box("BanheiroL",-6.6,2.9,-9.2,.3,5.8,3.7,wall);box("BanheiroS",-10.7,2.9,-5.7,8.2,5.8,.3,wall);
+box("Pia",-11.7,.9,-8.4,1.3,.15,.55,material(0xf0f0f0,.25),false);
+const wc=new THREE.Mesh(new THREE.CylinderGeometry(.34,.38,.55,20),material(0xf0f0f0,.3));wc.position.set(-9.7,.3,-8.4);scene.add(wc);
+
+for(let x=-12;x<=12;x+=6)for(let z=-7;z<=7;z+=6){const l=new THREE.PointLight(0xffffff,2.1,12);l.position.set(x,5.1,z);scene.add(l);box("LED",x,5.5,z,2,.05,.3,material(0xffffff,.25),false)}
+
+function machine(x,z,s=1){
+ const g=new THREE.Group();
+ const a=new THREE.Mesh(new THREE.BoxGeometry(1.35*s,.2,1.7*s),dark);a.position.y=.1;g.add(a);
+ const b=new THREE.Mesh(new THREE.BoxGeometry(.7*s,.18,.8*s),material(0x262626));b.position.set(0,.55,.15*s);g.add(b);
+ const p=new THREE.Mesh(new THREE.BoxGeometry(.12*s,1.5*s,.12*s),dark);p.position.set(0,1.1,-.62*s);g.add(p);
+ const bar=new THREE.Mesh(new THREE.BoxGeometry(1.7*s,.12,.12),gold);bar.position.set(0,1.75,-.62*s);g.add(bar);
+ g.position.set(x,0,z);g.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true}});scene.add(g);
+ colliders.push({x1:x-.75*s,x2:x+.75*s,z1:z-.9*s,z2:z+.9*s});
+}
+function bench(x,z,r=0){
+ const g=new THREE.Group();const b=new THREE.Mesh(new THREE.BoxGeometry(2,.2,.65),dark);b.position.y=.6;g.add(b);
+ const leg=new THREE.Mesh(new THREE.BoxGeometry(.15,.6,.15),dark);leg.position.y=.3;g.add(leg);g.position.set(x,0,z);g.rotation.y=r;scene.add(g);
+ colliders.push({x1:x-1.1,x2:x+1.1,z1:z-.55,z2:z+.55});
+}
+function treadmill(x,z){
+ const g=new THREE.Group();const d=new THREE.Mesh(new THREE.BoxGeometry(1,.18,2),dark);d.position.y=.22;g.add(d);
+ const bar=new THREE.Mesh(new THREE.BoxGeometry(1,1.4,.1),dark);bar.position.set(0,.95,-.85);g.add(bar);
+ const sc=new THREE.Mesh(new THREE.BoxGeometry(.5,.32,.08),gold);sc.position.set(0,1.5,-.82);g.add(sc);g.position.set(x,0,z);scene.add(g);
+ colliders.push({x1:x-.6,x2:x+.6,z1:z-1.05,z2:z+1.05});
+}
+bench(-11,4.8);bench(-8,3,Math.PI/2);bench(-11,.8,Math.PI/2);
+machine(-7,5);machine(-11,1.8,.9);machine(-8,-.5,.95);machine(-11,-2.8,.9);machine(-8,-4.7,.9);machine(-11,-5.9,.8);
+treadmill(4.5,7.3);treadmill(7.1,7.3);treadmill(9.7,7.3);machine(4.5,4.2,.9);machine(8,4.2,.9);machine(11.2,1.8,.9);bench(6,-1.5,Math.PI/2);machine(10,-2.8,.9);
+for(let i=0;i<5;i++)box("Rack",5+i*1.3,.5,-8.7,.9,.35,.4,dark);
+
+for(let i=0;i<5;i++)box("Degrau",10+i*.32,.15+i*.18,-.5-i*.35,2.2,.3,.8,wall);
+
+const doors=[];
+function door(x,z,w=1){const d=box("Porta",x,1.35,z,w,2.7,.12,material(0x8a6225,.5),false);doors.push({o:d,open:false,a:0});}
+door(-6.8,-7.15,1);door(-.15,-1.5,1.1);
+
+const pois=[[-10,3,"ÁREA DE MUSCULAÇÃO"],[8,7,"ÁREA DE CARDIO"],[-10,-7,"BANHEIRO"],[0,8.7,"ENTRADA"],[9,-6,"PESOS LIVRES"]];
+
+let started=false,locked=false,yaw=0,pitch=0;
+const keys={};
+addEventListener("keydown",e=>{keys[e.code]=true;if(e.code==="KeyM")document.getElementById("map").style.display=document.getElementById("map").style.display==="block"?"none":"block"});
+addEventListener("keyup",e=>keys[e.code]=false);
+
+function lock(){if(started && innerWidth>700 && renderer.domElement.requestPointerLock)renderer.domElement.requestPointerLock()}
+renderer.domElement.addEventListener("click",lock);
+document.addEventListener("pointerlockchange",()=>locked=document.pointerLockElement===renderer.domElement);
+document.addEventListener("mousemove",e=>{if(!locked)return;yaw-=e.movementX*.0022;pitch-=e.movementY*.0022;pitch=Math.max(-1.3,Math.min(1.3,pitch));});
+function blocked(x,z){const r=.35;return colliders.some(c=>x>c.x1-r&&x<c.x2+r&&z>c.z1-r&&z<c.z2+r)}
+function move(dx,dz){let nx=camera.position.x+dx;if(!blocked(nx,camera.position.z))camera.position.x=nx;let nz=camera.position.z+dz;if(!blocked(camera.position.x,nz))camera.position.z=nz;camera.position.x=Math.max(-14.4,Math.min(14.4,camera.position.x));camera.position.z=Math.max(-10.4,Math.min(10.4,camera.position.z))}
+function orient(){camera.rotation.order="YXZ";camera.rotation.y=yaw;camera.rotation.x=pitch}
+const start=document.getElementById("start"),hud=document.getElementById("hud"),info=document.getElementById("info");
+document.getElementById("enter").onclick=()=>{started=true;start.style.display="none";hud.style.display="block";camera.position.set(-11,1.7,8);yaw=0;pitch=0;if(innerWidth>700)lock()};
+
+let jx=0,jy=0,joyDown=false;
+const joy=document.getElementById("joy"),knob=document.getElementById("knob");
+joy.addEventListener("pointerdown",e=>{joyDown=true;joy.setPointerCapture(e.pointerId);joyMove(e)});
+joy.addEventListener("pointermove",e=>{if(joyDown)joyMove(e)});
+joy.addEventListener("pointerup",()=>{joyDown=false;jx=jy=0;knob.style.transform="translate(-50%,-50%)"});
+function joyMove(e){const r=joy.getBoundingClientRect(),x=(e.clientX-(r.left+r.width/2))/45,y=(e.clientY-(r.top+r.height/2))/45,l=Math.hypot(x,y);if(l>1){x/=l;y/=l}jx=x;jy=y;knob.style.transform=`translate(calc(-50% + ${x*38}px),calc(-50% + ${y*38}px))`}
+let lookDown=false,lx=0,ly=0;const look=document.getElementById("look");
+look.addEventListener("pointerdown",e=>{lookDown=true;look.setPointerCapture(e.pointerId);lx=e.clientX;ly=e.clientY});
+look.addEventListener("pointermove",e=>{if(!lookDown)return; yaw-=(e.clientX-lx)*.006;pitch-=(e.clientY-ly)*.006;pitch=Math.max(-1.3,Math.min(1.3,pitch));lx=e.clientX;ly=e.clientY});
+look.addEventListener("pointerup",()=>lookDown=false);
+document.getElementById("mapBtn").onclick=()=>document.getElementById("map").style.display=document.getElementById("map").style.display==="block"?"none":"block";
+
+let last=performance.now();
+function frame(t){requestAnimationFrame(frame);const dt=Math.min(.05,(t-last)/1000);last=t;
+if(started){orient();let f=(keys.KeyW?1:0)-(keys.KeyS?1:0);let s=(keys.KeyD?1:0)-(keys.KeyA?1:0);if(innerWidth<=700){f=-jy;s=jx}
+let sp=(keys.ShiftLeft||keys.ShiftRight)?5.5:3.2;
+const forward=new THREE.Vector3(Math.sin(yaw),0,-Math.cos(yaw)),right=new THREE.Vector3(Math.cos(yaw),0,Math.sin(yaw));
+if(f||s)move((forward.x*f+right.x*s)*sp*dt,(forward.z*f+right.z*s)*sp*dt);
+let best=null,bd=3;for(const p of pois){const d=Math.hypot(camera.position.x-p[0],camera.position.z-p[1]);if(d<bd){bd=d;best=p}}
+info.style.display=best?"block":"none";if(best)info.textContent=best[2];
+const mp=document.getElementById("mp");mp.style.left=((camera.position.x+15)/30*100)+"%";mp.style.top=((camera.position.z+11)/22*100)+"%";
+}
+renderer.render(scene,camera)}
+requestAnimationFrame(frame);
+addEventListener("resize",()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+})();
+</script>
+</body></html>

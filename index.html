@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Aroeira G Fitness 3D</title>
+<title>Aroeira G Fitness 3D — Planta corrigida</title>
 <style>
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#111;font-family:Arial,sans-serif;color:#fff}
 canvas{display:block}
@@ -40,7 +40,7 @@ button{border:0;border-radius:12px;padding:15px 22px;font-weight:bold;cursor:poi
 </div></div>
 <div id="hud"><div class="brand">AROEIRA G FITNESS</div><div class="help">WASD • MOUSE • SHIFT • M = MAPA • ESC</div><div id="cross"></div><div id="info"></div>
 <div id="map"><h3>MAPA</h3><div id="plan">
-<div class="wall" style="left:3%;top:3%;width:2%;height:94%"></div><div class="wall" style="left:3%;top:3%;width:94%;height:2%"></div><div class="wall" style="left:3%;top:95%;width:94%;height:2%"></div><div class="wall" style="left:52%;top:3%;width:2%;height:68%"></div><div class="wall" style="left:3%;top:22%;width:23%;height:2%"></div><div id="mp" class="p"></div>
+<div class="wall" style="left:3%;top:3%;width:2%;height:94%"></div><div class="wall" style="left:3%;top:3%;width:94%;height:2%"></div><div class="wall" style="left:3%;top:95%;width:94%;height:2%"></div><div class="wall" style="left:3%;top:16%;width:34%;height:2%"></div><div class="wall" style="left:37%;top:16%;width:2%;height:11%"></div><div class="wall" style="left:3%;top:27%;width:34%;height:2%"></div><div style="position:absolute;left:49%;top:5%;width:45%;height:62%;background:#8888;border:1px dashed #555"></div><div style="position:absolute;left:46%;top:67%;width:12%;height:5%;background:#777"></div><div id="mp" class="p"></div>
 </div></div></div>
 <div id="mobile"><div id="joy"><div id="knob"></div></div><div id="look"></div><div id="mapBtn">M</div></div>
 
@@ -52,7 +52,7 @@ const scene=new THREE.Scene();
 scene.background=new THREE.Color(0x9a9a9a);
 scene.fog=new THREE.Fog(0x9a9a9a,28,75);
 const camera=new THREE.PerspectiveCamera(72,innerWidth/innerHeight,.05,100);
-camera.position.set(-11,1.7,8);
+camera.position.set(-2.7,1.7,9.3);
 const renderer=new THREE.WebGLRenderer({antialias:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);
 renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
@@ -69,14 +69,60 @@ function box(n,x,y,z,sx,sy,sz,mat,hit=true){
  return o;
 }
 const floor=material(0x4b4b4b,.95), wall=material(0xbcbcbc,.85), dark=material(0x1b1b1b,.65,.25), gold=material(0xd5aa00,.35,.5);
-box("Piso",0,-.1,0,30,.2,22,floor,false);box("Teto",0,5.8,0,30,.1,22,material(0xd0d0d0),false);
-box("N",0,2.9,-11,30,5.8,.3,wall);box("S",0,2.9,11,30,5.8,.3,wall);box("O",-15,2.9,0,.3,5.8,22,wall);box("L",15,2.9,0,.3,5.8,22,wall);
-box("Divisoria",0,2.9,-1.5,.3,5.8,19,wall);
-box("BanheiroN",-10.7,2.9,-7.5,8.2,5.8,.3,wall);box("BanheiroL",-6.6,2.9,-9.2,.3,5.8,3.7,wall);box("BanheiroS",-10.7,2.9,-5.7,8.2,5.8,.3,wall);
-box("Pia",-11.7,.9,-8.4,1.3,.15,.55,material(0xf0f0f0,.25),false);
-const wc=new THREE.Mesh(new THREE.CylinderGeometry(.34,.38,.55,20),material(0xf0f0f0,.3));wc.position.set(-9.7,.3,-8.4);scene.add(wc);
+  // Planta corrigida conforme a referência: 7,64 m de largura x aproximadamente 21,7 m de comprimento.
+  const W=7.64, L=21.7, WT=.14, H=5.2;
+  box("Piso",0,-.1,0,W,.2,L,floor,false);
+  box("Teto",0,H,0,W,.1,L,material(0xd0d0d0),false);
+  box("N",0,H/2,-L/2,W,H,WT,wall);
+  box("S",0,H/2,L/2,W,H,WT,wall);
+  box("O",-W/2,H/2,0,WT,H,L,wall);
+  box("L",W/2,H/2,0,WT,H,L,wall);
 
-for(let x=-12;x<=12;x+=6)for(let z=-7;z<=7;z+=6){const l=new THREE.PointLight(0xffffff,2.1,12);l.position.set(x,5.1,z);scene.add(l);box("LED",x,5.5,z,2,.05,.3,material(0xffffff,.25),false)}
+  // A área lateral direita NÃO é um cômodo fechado: é um segundo nível aberto.
+  // O piso elevado começa após uma borda de desnível, sem parede separando os ambientes.
+  const raisedX=1.85, raisedZ=-4.0, raisedW=3.45, raisedL=13.6, raisedH=.95;
+  const raisedFloor=material(0x666666,.9);
+  box("PisoElevado",raisedX,raisedH-.1,raisedZ,raisedW,.2,raisedL,raisedFloor,false);
+
+  // Borda do desnível: somente acabamento baixo, sem fechar a área com parede.
+  box("BordaDoPiso",.12,.06,raisedZ+raisedL/2-.08,.08,.12,raisedL-.16,wall,false);
+
+  // Guarda-corpo/protetor na lateral externa do piso elevado.
+  const railMat=material(0x333333,.55,.2);
+  function rail(x,z,sx,sz){
+    box("GuardaCorpo",x,raisedH+0.65,z,sx,.10,sz,railMat,false);
+    const count=Math.max(2,Math.floor(Math.max(sx,sz)/.8));
+    for(let i=0;i<=count;i++){
+      const t=i/count;
+      const px=x+(sx/2)*0;
+      const pz=z-sz/2+sz*t;
+      if(sz>sx) box("PosteGuardaCorpo",x,raisedH+.35,pz,.08,.8,.08,railMat,false);
+      else box("PosteGuardaCorpo",x-sx/2+sx*t,raisedH+.35,z,.08,.8,.08,railMat,false);
+    }
+  }
+  // Protetor na lateral direita e no fundo do nível elevado.
+  rail(3.52,raisedZ,0.08,raisedL);
+  rail(raisedX,raisedZ-raisedL/2,raisedW,.08);
+
+  // Banheiro no canto superior esquerdo.
+  const bx=-2.45, bz=-9.05, bw=2.55, bd=2.75;
+  box("BanheiroN",bx,H/2,bz-bd/2,bw,H,WT,wall);
+  box("BanheiroL",bx+bw/2,H/2,bz,.12,H,bd,wall);
+  box("BanheiroS",bx,H/2,bz+bd/2,bw,H,WT,wall);
+  // Frente do banheiro com vão central para a porta.
+  box("BanheiroFrontalA",bx-.95,H/2,bz+bd/2,.65,H,WT,wall);
+  box("BanheiroFrontalB",bx+.95,H/2,bz+bd/2,.65,H,WT,wall);
+  box("PortaBanheiro",bx,H/2,bz+bd/2,.82,2.2,.08,material(0x8a6225,.5),false);
+  box("PiaBanheiro",bx-.55,.9,bz-.72,.65,.15,.45,material(0xf0f0f0,.25),false);
+  const wc=new THREE.Mesh(new THREE.CylinderGeometry(.34,.38,.55,20),material(0xf0f0f0,.3));
+  wc.position.set(bx+.62,.3,bz-.72);scene.add(wc);
+
+  // Iluminação proporcional à nova planta.
+  for(let x=-2.6;x<=2.6;x+=2.6)for(let z=-7.2;z<=8.5;z+=4.5){
+    const l=new THREE.PointLight(0xffffff,2.0,9);
+    l.position.set(x,4.7,z);scene.add(l);
+    box("LED",x,5.05,z,1.5,.05,.22,material(0xffffff,.25),false)
+  }
 
 function machine(x,z,s=1){
  const g=new THREE.Group();
@@ -103,13 +149,39 @@ function treadmill(x,z){
 
 
 
-for(let i=0;i<5;i++)box("Degrau",10+i*.32,.15+i*.18,-.5-i*.35,2.2,.3,.8,wall);
+// Equipamentos posicionados conforme a referência.
+  machine(-2.45,-6.8,.85);
+  machine(-2.35,-4.2,.82);
+  machine(-2.45,-1.4,.82);
+  machine(-2.35,1.5,.80);
+  bench(-1.9,-7.9,0);
+  bench(-1.9,3.7,0);
+  treadmill(-2.35,6.0,.82);
+  treadmill(-1.0,6.0,.82);
+  machine(2.15,0.8,.72);
+  machine(2.25,-2.2,.70);
+  bench(2.15,-5.5,0);
+  treadmill(2.15,-8.2,.78);
+
+  // Escada de acesso ao segundo nível, aberta para o salão.
+  // Os degraus sobem até o piso elevado, sem parede lateral fechando a escada.
+  const stairX=1.85, stairZ=2.9, stairW=2.0, steps=6;
+  for(let i=0;i<steps;i++){
+    const depth=.48;
+    const y=.16+i*(raisedH/steps);
+    const z=stairZ+i*depth;
+    box("Degrau",stairX,y,z,stairW,.32,depth,wall,false);
+  }
+  // Pequeno guarda-corpo nas laterais da escada.
+  for(const sx of [stairX-stairW/2,stairX+stairW/2]){
+    box("ProtetorEscada",sx,.62,stairZ+steps*depth/2,.08,1.0,steps*depth,railMat,false);
+  }
 
 const doors=[];
 function door(x,z,w=1){const d=box("Porta",x,1.35,z,w,2.7,.12,material(0x8a6225,.5),false);doors.push({o:d,open:false,a:0});}
-door(-6.8,-7.15,1);door(-.15,-1.5,1.1);
+door(-2.65,10.78,1.05);door(-.28,3.15,1.1);
 
-const pois=[[-10,3,"ÁREA DE MUSCULAÇÃO"],[8,7,"ÁREA DE CARDIO"],[-10,-7,"BANHEIRO"],[0,8.7,"ENTRADA"],[9,-6,"PESOS LIVRES"]];
+const pois=[[-2.3,-5.5,"ÁREA DE MUSCULAÇÃO"],[2.0,-5.0,"SEGUNDO NÍVEL"],[-2.45,-9.0,"BANHEIRO"],[0,10.0,"ENTRADA"],[2.1,2.6,"ESCADA / ACESSO AO NÍVEL ELEVADO"]];
 
 let started=false,locked=false,yaw=0,pitch=0;
 const keys={};
@@ -121,10 +193,10 @@ renderer.domElement.addEventListener("click",lock);
 document.addEventListener("pointerlockchange",()=>locked=document.pointerLockElement===renderer.domElement);
 document.addEventListener("mousemove",e=>{if(!locked)return;yaw-=e.movementX*.0022;pitch-=e.movementY*.0022;pitch=Math.max(-1.3,Math.min(1.3,pitch));});
 function blocked(x,z){const r=.35;return colliders.some(c=>x>c.x1-r&&x<c.x2+r&&z>c.z1-r&&z<c.z2+r)}
-function move(dx,dz){let nx=camera.position.x+dx;if(!blocked(nx,camera.position.z))camera.position.x=nx;let nz=camera.position.z+dz;if(!blocked(camera.position.x,nz))camera.position.z=nz;camera.position.x=Math.max(-14.4,Math.min(14.4,camera.position.x));camera.position.z=Math.max(-10.4,Math.min(10.4,camera.position.z))}
+function move(dx,dz){let nx=camera.position.x+dx;if(!blocked(nx,camera.position.z))camera.position.x=nx;let nz=camera.position.z+dz;if(!blocked(camera.position.x,nz))camera.position.z=nz;camera.position.x=Math.max(-3.45,Math.min(3.45,camera.position.x));camera.position.z=Math.max(-10.55,Math.min(10.55,camera.position.z))}
 function orient(){camera.rotation.order="YXZ";camera.rotation.y=yaw;camera.rotation.x=pitch}
 const start=document.getElementById("start"),hud=document.getElementById("hud"),info=document.getElementById("info");
-document.getElementById("enter").onclick=()=>{started=true;start.style.display="none";hud.style.display="block";camera.position.set(-11,1.7,8);yaw=0;pitch=0;if(innerWidth>700)lock()};
+document.getElementById("enter").onclick=()=>{started=true;start.style.display="none";hud.style.display="block";camera.position.set(-2.7,1.7,9.3);yaw=0;pitch=0;if(innerWidth>700)lock()};
 
 let jx=0,jy=0,joyDown=false;
 const joy=document.getElementById("joy"),knob=document.getElementById("knob");
@@ -146,7 +218,7 @@ const forward=new THREE.Vector3(Math.sin(yaw),0,-Math.cos(yaw)),right=new THREE.
 if(f||s)move((forward.x*f+right.x*s)*sp*dt,(forward.z*f+right.z*s)*sp*dt);
 let best=null,bd=3;for(const p of pois){const d=Math.hypot(camera.position.x-p[0],camera.position.z-p[1]);if(d<bd){bd=d;best=p}}
 info.style.display=best?"block":"none";if(best)info.textContent=best[2];
-const mp=document.getElementById("mp");mp.style.left=((camera.position.x+15)/30*100)+"%";mp.style.top=((camera.position.z+11)/22*100)+"%";
+const mp=document.getElementById("mp");mp.style.left=((camera.position.x+W/2)/W*100)+"%";mp.style.top=((camera.position.z+L/2)/L*100)+"%";
 }
 renderer.render(scene,camera)}
 requestAnimationFrame(frame);

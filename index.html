@@ -39,17 +39,17 @@ const mat=(c,r=.8,m=0)=>new THREE.MeshStandardMaterial({color:c,roughness:r,meta
 const floorMat=mat(0x5b5b5b,.95), wallMat=mat(0xbcbcbc,.85), dark=mat(0x202020,.65,.2), gold=mat(0xd7ad00,.4,.35), raisedMat=mat(0x777777,.9), railMat=mat(0x242424,.5,.2);
 function box(name,x,y,z,sx,sy,sz,material,hit=true){const o=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),material);o.name=name;o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;scene.add(o);if(hit)colliders.push({x1:x-sx/2,x2:x+sx/2,z1:z-sz/2,z2:z+sz/2});return o}
 // Medidas base da planta de referência.
-const W=7.64,L=21.72,H=5.25;
+const W=7.64,L=13.41,H=3.10;
 box('Piso',0,-.1,0,W,.2,L,floorMat,false);box('Teto',0,H,0,W,.1,L,mat(0xcfcfcf),false);
 box('ParedeN',0,H/2,-L/2,W,H,.16,wallMat);box('ParedeS',0,H/2,L/2,W,H,.16,wallMat);box('ParedeO',-W/2,H/2,0,.16,H,L,wallMat);box('ParedeL',W/2,H/2,0,.16,H,L,wallMat);
 // Banheiro no canto superior esquerdo: fechado somente onde a planta mostra.
-const bathW=2.55,bathL=2.75,bathX=-2.45,bathZ=-9.15;
+const bathW=2.55,bathL=2.72,bathX=-2.45,bathZ=-5.18;
 box('BanheiroFundo',bathX,H/2,bathZ-bathL/2,bathW,H,.14,wallMat);box('BanheiroEsq',bathX-bathW/2,H/2,bathZ,.14,H,bathL,wallMat);box('BanheiroDir',bathX+bathW/2,H/2,bathZ,.14,H,bathL,wallMat);
 box('BanheiroFrenteA',bathX-.83,H/2,bathZ+bathL/2,.88,H,.14,wallMat);box('BanheiroFrenteB',bathX+.83,H/2,bathZ+bathL/2,.88,H,.14,wallMat);
 box('PortaBanheiro',bathX,H/2,bathZ+bathL/2,.8,2.2,.08,mat(0x8b6225,.5),false);
 box('Pia',bathX-.58,.9,bathZ-.72,.62,.15,.42,mat(0xf2f2f2,.25),false);const wc=new THREE.Mesh(new THREE.CylinderGeometry(.34,.38,.55,20),mat(0xf2f2f2,.3));wc.position.set(bathX+.62,.3,bathZ-.72);scene.add(wc);
 // SEGUNDO NÍVEL: aberto, sem parede de separação.
-const levelX=1.78,levelZ=-3.55,levelW=3.52,levelL=13.7,levelH=1.02;
+const levelX=1.78,levelZ=-2.55,levelW=3.52,levelL=7.85,levelH=1.02;
 box('PisoElevado',levelX,levelH-.1,levelZ,levelW,.2,levelL,raisedMat,false);
 // Face vertical do desnível apenas como acabamento estrutural; não fecha a lateral como cômodo.
 box('FrenteDesnivel',levelX,levelH/2,levelZ+levelL/2,levelW,levelH,.10,mat(0x8b8b8b),false);
@@ -57,29 +57,27 @@ box('FrenteDesnivel',levelX,levelH/2,levelZ+levelL/2,levelW,levelH,.10,mat(0x8b8
 function railLine(x,z,sx,sz){const y=levelH+.72;box('Corrimao',x,y,z,sx,.08,sz,railMat,false);const n=Math.max(2,Math.ceil(Math.max(sx,sz)/.7));for(let i=0;i<=n;i++){const t=i/n;if(sz>sx)box('Poste',x,levelH+.38,z-sz/2+sz*t,.07,.78,.07,railMat,false);else box('Poste',x-sx/2+sx*t,levelH+.38,z,.07,.78,.07,railMat,false)}}
 railLine(levelX-levelW/2,levelZ,.08,levelL);railLine(levelX+levelW/2,levelZ,.08,levelL);railLine(levelX,levelZ-levelL/2,levelW,.08);
 // Escada na extremidade inferior/direita, aberta para o salão.
-const stairX=1.85,stairStartZ=3.25,stepW=2.05,stepD=.45,steps=6;
+const stairX=2.15,stairStartZ=1.55,stepW=2.05,stepD=.45,steps=6;
 for(let i=0;i<steps;i++){const y=.085+i*(levelH/steps);const z=stairStartZ+i*stepD;box('Degrau',stairX,y,z,stepW,.17+i*(levelH/steps),stepD,wallMat,false)}
 // Proteção lateral da escada.
 box('ProtetorEscadaL',stairX-stepW/2,.63,stairStartZ+steps*stepD/2,.07,1.0,steps*stepD,railMat,false);box('ProtetorEscadaR',stairX+stepW/2,.63,stairStartZ+steps*stepD/2,.07,1.0,steps*stepD,railMat,false);
 // Iluminação linear.
-for(let x=-2.6;x<=2.6;x+=2.6)for(let z=-7.2;z<=8.8;z+=4){const l=new THREE.PointLight(0xffffff,1.65,8);l.position.set(x,4.75,z);scene.add(l);box('LED',x,5.02,z,1.45,.045,.20,mat(0xffffff,.2),false)}
+for(let x=-2.6;x<=2.6;x+=2.6)for(let z=-5.2;z<=5.2;z+=3.2){const l=new THREE.PointLight(0xffffff,1.65,8);l.position.set(x,4.75,z);scene.add(l);box('LED',x,5.02,z,1.45,.045,.20,mat(0xffffff,.2),false)}
 function machine(x,z,s=.8,rot=0){const g=new THREE.Group();const a=new THREE.Mesh(new THREE.BoxGeometry(1.25*s,.2,1.55*s),dark);a.position.y=.1;g.add(a);const b=new THREE.Mesh(new THREE.BoxGeometry(.62*s,.18,.72*s),mat(0x292929));b.position.set(0,.55,.12*s);g.add(b);const p=new THREE.Mesh(new THREE.BoxGeometry(.11*s,1.45*s,.11*s),dark);p.position.set(0,1.08,-.56*s);g.add(p);const bar=new THREE.Mesh(new THREE.BoxGeometry(1.55*s,.11,.11),gold);bar.position.set(0,1.68,-.56*s);g.add(bar);g.position.set(x,0,z);g.rotation.y=rot;g.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true}});scene.add(g);colliders.push({x1:x-.72*s,x2:x+.72*s,z1:z-.82*s,z2:z+.82*s})}
 function bench(x,z,rot=0){const g=new THREE.Group();const b=new THREE.Mesh(new THREE.BoxGeometry(1.65,.2,.58),dark);b.position.y=.55;g.add(b);const leg=new THREE.Mesh(new THREE.BoxGeometry(.13,.55,.13),dark);leg.position.y=.27;g.add(leg);g.position.set(x,0,z);g.rotation.y=rot;scene.add(g);colliders.push({x1:x-.9,x2:x+.9,z1:z-.5,z2:z+.5})}
 function treadmill(x,z,rot=0){const g=new THREE.Group();const d=new THREE.Mesh(new THREE.BoxGeometry(.9,.18,1.75),dark);d.position.y=.2;g.add(d);const bar=new THREE.Mesh(new THREE.BoxGeometry(.9,1.3,.09),dark);bar.position.set(0,.9,-.74);g.add(bar);const sc=new THREE.Mesh(new THREE.BoxGeometry(.44,.28,.07),gold);sc.position.set(0,1.42,-.71);g.add(sc);g.position.set(x,0,z);g.rotation.y=rot;scene.add(g);colliders.push({x1:x-.55,x2:x+.55,z1:z-.95,z2:z+.95})}
 // Equipamentos distribuídos de acordo com a leitura da planta.
-machine(-2.35,-7.0,.82);machine(-2.30,-4.25,.78);machine(-2.25,-1.55,.78);machine(-2.25,1.35,.75);bench(-1.65,-8.25);bench(-1.7,3.85);treadmill(-2.25,6.35);treadmill(-.95,6.35);machine(-1.95,-.1,.72);machine(2.25,-6.55,.65);bench(2.15,-8.7);machine(2.2,-4.55,.68);machine(2.2,-2.0,.68);
-// Equipamentos no nível elevado, sem paredes laterais.
-bench(1.55,-7.5,.0);machine(2.2,-5.1,.58);machine(2.15,-2.8,.58);bench(1.55,-.8,.0);machine(2.05,-6.9,.58);
-const pois=[[-2.2,-4.5,'ÁREA DE MUSCULAÇÃO'],[1.9,-3.5,'PISO ELEVADO'],[-2.45,-9.1,'BANHEIRO'],[0,9.8,'ENTRADA'],[1.85,3.8,'ESCADA']];
+machine(-2.35,-3.75,.72);machine(-2.30,-2.55,.68);machine(-2.25,-1.25,.68);machine(-2.25,.15,.66);bench(-1.65,-4.25);bench(-1.7,1.2);treadmill(-2.25,4.7);treadmill(-.95,4.7);machine(-1.95,-.15,.62);machine(2.25,-.55,.55);bench(2.15,1.25);machine(2.2,2.75,.58);
+const pois=[[-2.2,-2.2,'ÁREA DE MUSCULAÇÃO'],[1.9,-2.4,'PISO ELEVADO'],[-2.45,-5.2,'BANHEIRO'],[0,5.8,'ENTRADA'],[2.15,2.6,'ESCADA']];
 let started=false,locked=false,yaw=0,pitch=0;const keys={};
 addEventListener('keydown',e=>{keys[e.code]=true;if(e.code==='KeyM')toggleMap()});addEventListener('keyup',e=>keys[e.code]=false);
 function toggleMap(){const m=document.getElementById('map');m.style.display=m.style.display==='block'?'none':'block'}
 function lock(){if(started&&innerWidth>700&&renderer.domElement.requestPointerLock)renderer.domElement.requestPointerLock()}renderer.domElement.addEventListener('click',lock);document.addEventListener('pointerlockchange',()=>locked=document.pointerLockElement===renderer.domElement);document.addEventListener('mousemove',e=>{if(!locked)return;yaw-=e.movementX*.0022;pitch-=e.movementY*.0022;pitch=Math.max(-1.15,Math.min(1.15,pitch))});
 function blocked(x,z){const r=.30;return colliders.some(c=>x>c.x1-r&&x<c.x2+r&&z>c.z1-r&&z<c.z2+r)}
-function move(dx,dz){let nx=camera.position.x+dx;if(!blocked(nx,camera.position.z))camera.position.x=nx;let nz=camera.position.z+dz;if(!blocked(camera.position.x,nz))camera.position.z=nz;camera.position.x=Math.max(-3.45,Math.min(3.45,camera.position.x));camera.position.z=Math.max(-10.55,Math.min(10.55,camera.position.z))}
+function move(dx,dz){let nx=camera.position.x+dx;if(!blocked(nx,camera.position.z))camera.position.x=nx;let nz=camera.position.z+dz;if(!blocked(camera.position.x,nz))camera.position.z=nz;camera.position.x=Math.max(-3.45,Math.min(3.45,camera.position.x));camera.position.z=Math.max(-6.25,Math.min(6.25,camera.position.z))}
 function orient(){camera.rotation.order='YXZ';camera.rotation.y=yaw;camera.rotation.x=pitch}
 const start=document.getElementById('start'),hud=document.getElementById('hud'),info=document.getElementById('info');
-document.getElementById('enter').onclick=()=>{started=true;start.style.display='none';hud.style.display='block';camera.position.set(0,1.7,9.25);yaw=Math.PI;pitch=0;if(innerWidth>700)lock()};
+document.getElementById('enter').onclick=()=>{started=true;start.style.display='none';hud.style.display='block';camera.position.set(-2.55,1.7,5.85);yaw=Math.PI;pitch=0;if(innerWidth>700)lock()};
 let jx=0,jy=0,joyDown=false;const joy=document.getElementById('joy'),knob=document.getElementById('knob');joy.addEventListener('pointerdown',e=>{joyDown=true;joy.setPointerCapture(e.pointerId);joyMove(e)});joy.addEventListener('pointermove',e=>{if(joyDown)joyMove(e)});joy.addEventListener('pointerup',()=>{joyDown=false;jx=jy=0;knob.style.transform='translate(-50%,-50%)'});function joyMove(e){const r=joy.getBoundingClientRect();let x=(e.clientX-(r.left+r.width/2))/45,y=(e.clientY-(r.top+r.height/2))/45,l=Math.hypot(x,y);if(l>1){x/=l;y/=l}jx=x;jy=y;knob.style.transform=`translate(calc(-50% + ${x*38}px),calc(-50% + ${y*38}px))`}
 let lookDown=false,lx=0,ly=0;const look=document.getElementById('look');look.addEventListener('pointerdown',e=>{lookDown=true;look.setPointerCapture(e.pointerId);lx=e.clientX;ly=e.clientY});look.addEventListener('pointermove',e=>{if(!lookDown)return;yaw-=(e.clientX-lx)*.005;pitch-=(e.clientY-ly)*.005;pitch=Math.max(-1.15,Math.min(1.15,pitch));lx=e.clientX;ly=e.clientY});look.addEventListener('pointerup',()=>lookDown=false);document.getElementById('mapBtn').onclick=toggleMap;
 let last=performance.now();function frame(t){requestAnimationFrame(frame);const dt=Math.min(.05,(t-last)/1000);last=t;if(started){orient();let f=(keys.KeyW?1:0)-(keys.KeyS?1:0),s=(keys.KeyD?1:0)-(keys.KeyA?1:0);if(innerWidth<=700){f=-jy;s=jx}let sp=(keys.ShiftLeft||keys.ShiftRight)?4.8:2.8;const forward=new THREE.Vector3(Math.sin(yaw),0,-Math.cos(yaw)),right=new THREE.Vector3(Math.cos(yaw),0,Math.sin(yaw));if(f||s)move((forward.x*f+right.x*s)*sp*dt,(forward.z*f+right.z*s)*sp*dt);let best=null,bd=2.7;for(const p of pois){const d=Math.hypot(camera.position.x-p[0],camera.position.z-p[1]);if(d<bd){bd=d;best=p}}info.style.display=best?'block':'none';if(best)info.textContent=best[2];const mp=document.getElementById('mp');mp.style.left=((camera.position.x+W/2)/W*94+3)+'%';mp.style.top=((camera.position.z+L/2)/L*94+3)+'%'}renderer.render(scene,camera)}requestAnimationFrame(frame);addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});

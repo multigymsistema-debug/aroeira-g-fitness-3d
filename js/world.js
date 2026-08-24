@@ -8,10 +8,12 @@ box(-5.45,1.45,14,.8,2.9,.25,mat.wall);box(5.45,1.45,14,1.1,2.9,.25,mat.wall);bo
 for(let i=-5;i<=5;i+=.7){let bush=new THREE.Mesh(new THREE.SphereGeometry(.22,7,5),new THREE.MeshStandardMaterial({color:0x315b35,roughness:1}));bush.position.set(i,.2,14.65);scene.add(bush)}
 // Banheiro e pequeno ambiente de apoio no canto posterior esquerdo, conforme a planta.
 box(-3.9,1.45,-11.5,4.0,2.9,.18,mat.wall);box(-5.85,1.45,-12.7,.18,2.9,2.6,mat.wall);box(-1.95,1.45,-12.7,.18,2.9,2.6,mat.wall);box(-3.9,1.45,-13.8,4.0,2.9,.18,mat.wall);addDoor(scene,world,interactive,-3.9,-12.7,'Banheiro');
-// Estrutura central elevada: grande volume retangular que organiza a circulação da academia.
-const px=.55,pz=1.7,pw=4.55,pd=8.5;box(px,.72,pz,pw,1.45,pd,mat.wall);box(px,1.62,pz-pd/2+.12,pw,.35,.22,mat.wall,false);box(px,1.62,pz+pd/2-.12,pw,.35,.22,mat.wall,false);box(px-pw/2+.12,1.62,pz,.22,.35,pd,mat.wall,false);box(px+pw/2-.12,1.62,pz,.22,.35,pd,mat.wall,false);box(px,1.9,pz,pw,.15,pd,mat.floor,false);world.add(px,pz,pw,pd);
-// Escada na lateral direita do volume, voltada para a área aberta.
-for(let i=0;i<7;i++){let z=6.35-i*.42;box(3.6,.12+i*.19,z,2.0,.24+i*.38,.42,mat.wall);world.add(3.6,z,2.0,.42)}box(4.65,1.15,5.05,.08,1.55,3.1,mat.gold,false);box(2.55,1.15,5.05,.08,1.55,3.1,mat.gold,false);
+// Parede divisória longitudinal central: separa musculação (esquerda) do salão aberto (direita).
+// Ela desce desde o fundo até a área central inferior, deixando a passagem livre na frente.
+box(0,1.45,-2.7,.24,2.9,22.2,mat.wall);
+// Escada verdadeira no lado direito da área central/inferior, junto à parede externa.
+for(let i=0;i<7;i++){let z=5.7-i*.42;box(4.55,.12+i*.19,z,2.0,.24+i*.38,.42,mat.wall);world.add(4.55,z,2.0,.42)}
+box(5.52,1.15,4.35,.08,1.55,3.0,mat.gold,false);box(3.58,1.15,4.35,.08,1.55,3.0,mat.gold,false);
 // Luminárias lineares distribuídas no teto.
 for(let x=-4.5;x<=4.5;x+=2.25)for(let z=-10;z<=11;z+=4.2){let l=new THREE.Mesh(new THREE.BoxGeometry(1.35,.04,.2),new THREE.MeshStandardMaterial({color:0xffffff,emissive:0xffffff,emissiveIntensity:1.8}));l.position.set(x,2.82,z);scene.add(l);let p=new THREE.PointLight(0xfaf4df,.48,7);p.position.set(x,2.65,z);scene.add(p)}
 // Equipamentos concentrados na faixa lateral esquerda, mantendo corredores livres no centro.
